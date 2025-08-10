@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduClasses - Your Learning Journey Starts Here</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>EduClasses</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#classes">Classes</a></li>
+                <li><a href="#materials">Study Materials</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#join">Join Us</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><button class="login-btn" onclick="openLoginModal()">Login</button></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>Unlock Your Potential with <span class="highlight">EduClasses</span></h1>
+                <p>Join our innovative learning community where quality education meets convenience. Book batches, access study materials, and excel in your academic journey.</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary" onclick="scrollToSection('join')">Get Started</button>
+                    <button class="btn-secondary" onclick="scrollToSection('features')">Learn More</button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="floating-card">
+                    <i class="fas fa-users"></i>
+                    <h3>500+ Students</h3>
+                    <p>Already Learning</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose EduClasses?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h3>Flexible Batch Booking</h3>
+                    <p>Book classes according to your schedule with our easy-to-use booking system.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3>Study Materials</h3>
+                    <p>Access comprehensive study materials uploaded by expert teachers.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <h3>Expert Teachers</h3>
+                    <p>Learn from qualified and experienced educators dedicated to your success.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>24/7 Support</h3>
+                    <p>Get help whenever you need it with our round-the-clock support system.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Classes Section -->
+    <section id="classes" class="classes">
+        <div class="container">
+            <h2 class="section-title">Available Classes</h2>
+            <div class="classes-grid" id="classesGrid">
+                <!-- Classes will be dynamically loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Study Materials Section -->
+    <section id="materials" class="materials">
+        <div class="container">
+            <h2 class="section-title">Study Materials</h2>
+            <div class="materials-container">
+                <div class="materials-filters">
+                    <select id="subjectFilter">
+                        <option value="">All Subjects</option>
+                        <option value="mathematics">Mathematics</option>
+                        <option value="science">Science</option>
+                        <option value="english">English</option>
+                        <option value="history">History</option>
+                    </select>
+                    <select id="gradeFilter">
+                        <option value="">All Grades</option>
+                        <option value="1-5">Grade 1-5</option>
+                        <option value="6-8">Grade 6-8</option>
+                        <option value="9-10">Grade 9-10</option>
+                        <option value="11-12">Grade 11-12</option>
+                    </select>
+                </div>
+                <div class="materials-grid" id="materialsGrid">
+                    <!-- Materials will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery">
+        <div class="container">
+            <h2 class="section-title">Our Learning Environment</h2>
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Gallery images will be dynamically loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Join Us Section -->
+    <section id="join" class="join">
+        <div class="container">
+            <h2 class="section-title">Join Our Learning Community</h2>
+            <div class="join-content">
+                <div class="join-form">
+                    <form id="joinForm">
+                        <div class="form-group">
+                            <label for="studentName">Student Name *</label>
+                            <input type="text" id="studentName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="parentName">Parent Name *</label>
+                            <input type="text" id="parentName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact">Contact Number *</label>
+                            <input type="tel" id="contact" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="standard">Standard/Grade *</label>
+                            <select id="standard" required>
+                                <option value="">Select Standard</option>
+                                <option value="1">Grade 1</option>
+                                <option value="2">Grade 2</option>
+                                <option value="3">Grade 3</option>
+                                <option value="4">Grade 4</option>
+                                <option value="5">Grade 5</option>
+                                <option value="6">Grade 6</option>
+                                <option value="7">Grade 7</option>
+                                <option value="8">Grade 8</option>
+                                <option value="9">Grade 9</option>
+                                <option value="10">Grade 10</option>
+                                <option value="11">Grade 11</option>
+                                <option value="12">Grade 12</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="subjects">Subjects of Interest</label>
+                            <textarea id="subjects" placeholder="e.g., Mathematics, Science, English"></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Submit Application</button>
+                    </form>
+                </div>
+                <div class="join-info">
+                    <h3>Why Join EduClasses?</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Personalized learning experience</li>
+                        <li><i class="fas fa-check"></i> Small batch sizes for better attention</li>
+                        <li><i class="fas fa-check"></i> Regular progress tracking</li>
+                        <li><i class="fas fa-check"></i> Parent-teacher communication</li>
+                        <li><i class="fas fa-check"></i> Affordable quality education</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Contact Us</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Address</h4>
+                            <p>123 Education Street, Learning District<br>City, State 12345</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Phone</h4>
+                            <p>+1 (555) 123-4567</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>info@educlasses.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h4>Hours</h4>
+                            <p>Monday - Friday: 8:00 AM - 8:00 PM<br>Saturday: 9:00 AM - 6:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-map">
+                    <div id="map">
+                        <!-- Map will be embedded here -->
+                        <div class="map-placeholder">
+                            <i class="fas fa-map"></i>
+                            <p>Interactive Map</p>
+                            <small>Google Maps integration</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>EduClasses</h3>
+                    <p>Empowering students with quality education and innovative learning experiences.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#classes">Classes</a></li>
+                        <li><a href="#materials">Study Materials</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#join">Student Registration</a></li>
+                        <li><a href="#materials">Online Learning</a></li>
+                        <li><a href="#gallery">Facilities</a></li>
+                        <li><a href="#contact">Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Newsletter</h4>
+                    <p>Stay updated with our latest news and offers.</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Enter your email">
+                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 EduClasses. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <div class="login-tabs">
+                <button class="tab-btn active" onclick="switchTab('student')">Student Login</button>
+                <button class="tab-btn" onclick="switchTab('admin')">Admin Login</button>
+            </div>
+            
+            <!-- Student Login -->
+            <div id="studentLogin" class="tab-content active">
+                <h2>Student Login</h2>
+                <form id="studentLoginForm">
+                    <div class="form-group">
+                        <label for="studentEmail">Email</label>
+                        <input type="email" id="studentEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentPassword">Password</label>
+                        <input type="password" id="studentPassword" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Login</button>
+                </form>
+                <p class="login-footer">Don't have an account? <a href="#" onclick="scrollToSection('join')">Register here</a></p>
+            </div>
+
+            <!-- Admin Login -->
+            <div id="adminLogin" class="tab-content">
+                <h2>Admin Login</h2>
+                <form id="adminLoginForm">
+                    <div class="form-group">
+                        <label for="adminUsername">Username</label>
+                        <input type="text" id="adminUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminPassword">Password</label>
+                        <input type="password" id="adminPassword" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Modal -->
+    <div id="adminDashboard" class="modal">
+        <div class="modal-content admin-dashboard">
+            <span class="close" onclick="closeAdminDashboard()">&times;</span>
+            <h2>Admin Dashboard</h2>
+            
+            <div class="admin-tabs">
+                <button class="admin-tab-btn active" onclick="switchAdminTab('batches')">Manage Batches</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('materials')">Study Materials</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('gallery')">Gallery</button>
+            </div>
+
+            <!-- Manage Batches Tab -->
+            <div id="batchesTab" class="admin-tab-content active">
+                <h3>Create New Batch</h3>
+                <form id="batchForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="batchSubject">Subject</label>
+                            <input type="text" id="batchSubject" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="batchGrade">Grade</label>
+                            <select id="batchGrade" required>
+                                <option value="">Select Grade</option>
+                                <option value="1-5">Grade 1-5</option>
+                                <option value="6-8">Grade 6-8</option>
+                                <option value="9-10">Grade 9-10</option>
+                                <option value="11-12">Grade 11-12</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="batchDate">Date</label>
+                            <input type="date" id="batchDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="batchTime">Time</label>
+                            <input type="time" id="batchTime" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="batchDuration">Duration (minutes)</label>
+                            <input type="number" id="batchDuration" min="30" max="180" value="60" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="batchCapacity">Capacity</label>
+                            <input type="number" id="batchCapacity" min="1" max="20" value="15" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="batchTeacher">Teacher</label>
+                        <input type="text" id="batchTeacher" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Create Batch</button>
+                </form>
+
+                <h3>Existing Batches</h3>
+                <div class="batches-list" id="batchesList">
+                    <!-- Batches will be displayed here -->
+                </div>
+            </div>
+
+            <!-- Study Materials Tab -->
+            <div id="materialsTab" class="admin-tab-content">
+                <h3>Upload Study Material</h3>
+                <form id="materialForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="materialTitle">Title</label>
+                            <input type="text" id="materialTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="materialSubject">Subject</label>
+                            <input type="text" id="materialSubject" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="materialGrade">Grade</label>
+                            <select id="materialGrade" required>
+                                <option value="">Select Grade</option>
+                                <option value="1-5">Grade 1-5</option>
+                                <option value="6-8">Grade 6-8</option>
+                                <option value="9-10">Grade 9-10</option>
+                                <option value="11-12">Grade 11-12</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="materialFile">File</label>
+                            <input type="file" id="materialFile" accept=".pdf,.doc,.docx,.ppt,.pptx" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="materialDescription">Description</label>
+                        <textarea id="materialDescription" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">Upload Material</button>
+                </form>
+            </div>
+
+            <!-- Gallery Tab -->
+            <div id="galleryTab" class="admin-tab-content">
+                <h3>Upload Gallery Image</h3>
+                <form id="galleryForm">
+                    <div class="form-group">
+                        <label for="galleryTitle">Title</label>
+                        <input type="text" id="galleryTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="galleryCategory">Category</label>
+                        <select id="galleryCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="classroom">Classroom</option>
+                            <option value="facility">Facility</option>
+                            <option value="event">Event</option>
+                            <option value="amenity">Amenity</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="galleryImage">Image</label>
+                        <input type="file" id="galleryImage" accept="image/*" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="galleryDescription">Description</label>
+                        <textarea id="galleryDescription" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">Upload Image</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="message" class="message"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
