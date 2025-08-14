@@ -1,4 +1,6 @@
 // Global Variables
+// Firebase Authentication
+let firebaseAuth;
 let currentUser = null;
 let isAdmin = false;
 let batches = [];
@@ -13,6 +15,36 @@ document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
     loadSampleData();
     renderContent();
+    // Firebase Auth
+    if (window.firebase) {
+        firebaseAuth = firebase.auth();
+        setupFirebaseAuthListeners();
+    }
+// Setup Firebase Auth event listeners
+function setupFirebaseAuthListeners() {
+    document.getElementById('login-btn').addEventListener('click', function() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                document.getElementById('auth-message').innerText = 'Login successful!';
+            })
+            .catch((error) => {
+                document.getElementById('auth-message').innerText = error.message;
+            });
+    });
+    document.getElementById('signup-btn').addEventListener('click', function() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                document.getElementById('auth-message').innerText = 'Signup successful!';
+            })
+            .catch((error) => {
+                document.getElementById('auth-message').innerText = error.message;
+            });
+    });
+}
 });
 
 // Initialize the application
