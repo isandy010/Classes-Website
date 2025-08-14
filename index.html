@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -25,7 +26,16 @@
                 <li><a href="#gallery">Gallery</a></li>
                 <li><a href="#join">Join Us</a></li>
                 <li><a href="#contact">Contact</a></li>
-                <li><button class="login-btn" onclick="openLoginModal()">Login</button></li>
+                <li id="userMenu" style="display: none;">
+                    <div class="user-menu">
+                        <span id="userName">User</span>
+                        <div class="user-dropdown">
+                            <a href="#" onclick="openUserProfile()">Profile</a>
+                            <a href="#" onclick="logout()">Logout</a>
+                        </div>
+                    </div>
+                </li>
+                <li id="loginButton"><button class="login-btn" onclick="openLoginModal()">Login</button></li>
             </ul>
             <div class="hamburger">
                 <span></span>
@@ -172,14 +182,14 @@
     <section id="materials" class="materials">
         <div class="container">
             <h2 class="section-title">Study Materials</h2>
+            <p class="section-subtitle">Access comprehensive study materials for Mathematics, English, and Science across all grades. Browse freely and login to download resources.</p>
             <div class="materials-container">
                 <div class="materials-filters">
                     <select id="subjectFilter">
                         <option value="">All Subjects</option>
                         <option value="mathematics">Mathematics</option>
-                        <option value="science">Science</option>
                         <option value="english">English</option>
-                        <option value="history">History</option>
+                        <option value="science">Science</option>
                     </select>
                     <select id="gradeFilter">
                         <option value="">All Grades</option>
@@ -190,7 +200,108 @@
                     </select>
                 </div>
                 <div class="materials-grid" id="materialsGrid">
-                    <!-- Materials will be dynamically loaded here -->
+                    <!-- Sample study materials that are visible to all users -->
+                    <div class="material-card">
+                        <div class="material-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <div class="material-content">
+                            <h3>Basic Mathematics - Grade 1-5</h3>
+                            <p>Fundamental concepts including addition, subtraction, multiplication, and division</p>
+                            <div class="material-meta">
+                                <span class="subject">Mathematics</span>
+                                <span class="grade">Grade 1-5</span>
+                            </div>
+                        </div>
+                        <button class="download-btn" onclick="handleDownload('Basic Mathematics - Grade 1-5')">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                    </div>
+                    
+                    <div class="material-card">
+                        <div class="material-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="material-content">
+                            <h3>English Grammar - Grade 6-8</h3>
+                            <p>Comprehensive grammar rules, vocabulary building, and reading comprehension</p>
+                            <div class="material-meta">
+                                <span class="subject">English</span>
+                                <span class="grade">Grade 6-8</span>
+                            </div>
+                        </div>
+                        <button class="download-btn" onclick="handleDownload('English Grammar - Grade 6-8')">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                    </div>
+                    
+                    <div class="material-card">
+                        <div class="material-icon">
+                            <i class="fas fa-flask"></i>
+                        </div>
+                        <div class="material-content">
+                            <h3>Science Experiments - Grade 9-10</h3>
+                            <p>Practical experiments for Physics, Chemistry, and Biology concepts</p>
+                            <div class="material-meta">
+                                <span class="subject">Science</span>
+                                <span class="grade">Grade 9-10</span>
+                            </div>
+                        </div>
+                        <button class="download-btn" onclick="handleDownload('Science Experiments - Grade 9-10')">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                    </div>
+                    
+                    <div class="material-card">
+                        <div class="material-icon">
+                            <i class="fas fa-square-root-alt"></i>
+                        </div>
+                        <div class="material-content">
+                            <h3>Advanced Mathematics - Grade 11-12</h3>
+                            <p>Calculus, trigonometry, and advanced mathematical concepts</p>
+                            <div class="material-meta">
+                                <span class="subject">Mathematics</span>
+                                <span class="grade">Grade 11-12</span>
+                            </div>
+                        </div>
+                        <button class="download-btn" onclick="handleDownload('Advanced Mathematics - Grade 11-12')">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                    </div>
+                    
+                    <div class="material-card">
+                        <div class="material-icon">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <div class="material-content">
+                            <h3>English Literature - Grade 9-12</h3>
+                            <p>Classic literature analysis, essay writing, and critical thinking</p>
+                            <div class="material-meta">
+                                <span class="subject">English</span>
+                                <span class="grade">Grade 9-12</span>
+                            </div>
+                        </div>
+                        <button class="download-btn" onclick="handleDownload('English Literature - Grade 9-12')">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                    </div>
+                    
+                    <div class="material-card">
+                        <div class="material-icon">
+                            <i class="fas fa-atom"></i>
+                        </div>
+                        <div class="material-content">
+                            <h3>Chemistry Fundamentals - Grade 6-8</h3>
+                            <p>Introduction to atoms, molecules, and basic chemical reactions</p>
+                            <div class="material-meta">
+                                <span class="subject">Science</span>
+                                <span class="grade">Grade 6-8</span>
+                            </div>
+                        </div>
+                        <button class="download-btn" onclick="handleDownload('Chemistry Fundamentals - Grade 6-8')">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -382,8 +493,8 @@
                 <h2>Student Login</h2>
                 <form id="studentLoginForm">
                     <div class="form-group">
-                        <label for="studentEmail">Email</label>
-                        <input type="email" id="studentEmail" required>
+                        <label for="studentEmail">Email or Mobile Number</label>
+                        <input type="text" id="studentEmail" placeholder="Enter email or mobile" required>
                     </div>
                     <div class="form-group">
                         <label for="studentPassword">Password</label>
@@ -391,7 +502,22 @@
                     </div>
                     <button type="submit" class="btn-primary">Login</button>
                 </form>
-                <p class="login-footer">Don't have an account? <a href="#" onclick="scrollToSection('join')">Register here</a></p>
+                
+                <!-- Google Login Button -->
+                <div class="google-login">
+                    <button type="button" class="btn-google" onclick="signInWithGoogle()">
+                        <svg class="google-icon" viewBox="0 0 24 24" width="24" height="24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        Continue with Google
+                    </button>
+                </div>
+                
+                <p class="login-footer">Don't have an account? <a href="#" onclick="openSignupModal()">Register here</a></p>
+                <p class="login-footer"><a href="#" onclick="openForgotPasswordModal()">Forgot Password?</a></p>
             </div>
 
             <!-- Admin Login -->
@@ -412,6 +538,96 @@
         </div>
     </div>
 
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSignupModal()">&times;</span>
+            <h2>Student Registration</h2>
+            <form id="signupForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signupStudentName">Student Name *</label>
+                        <input type="text" id="signupStudentName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupParentName">Parent Name *</label>
+                        <input type="text" id="signupParentName" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signupEmail">Email Address *</label>
+                        <input type="email" id="signupEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupMobile">Mobile Number *</label>
+                        <input type="tel" id="signupMobile" pattern="[0-9]{10}" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signupStandard">Standard/Grade *</label>
+                        <select id="signupStandard" required>
+                            <option value="">Select Standard</option>
+                            <option value="1">Grade 1</option>
+                            <option value="2">Grade 2</option>
+                            <option value="3">Grade 3</option>
+                            <option value="4">Grade 4</option>
+                            <option value="5">Grade 5</option>
+                            <option value="6">Grade 6</option>
+                            <option value="7">Grade 7</option>
+                            <option value="8">Grade 8</option>
+                            <option value="9">Grade 9</option>
+                            <option value="10">Grade 10</option>
+                            <option value="11">Grade 11</option>
+                            <option value="12">Grade 12</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupSchool">School Name</label>
+                        <input type="text" id="signupSchool" placeholder="Current school name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="signupSubjects">Subjects of Interest</label>
+                    <textarea id="signupSubjects" placeholder="e.g., Mathematics, Science, English"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signupPassword">Password *</label>
+                        <input type="password" id="signupPassword" minlength="6" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupConfirmPassword">Confirm Password *</label>
+                        <input type="password" id="signupConfirmPassword" minlength="6" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="signupAddress">Address</label>
+                    <textarea id="signupAddress" placeholder="Enter your address"></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Create Account</button>
+            </form>
+            <p class="signup-footer">Already have an account? <a href="#" onclick="openLoginModal()">Login here</a></p>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeForgotPasswordModal()">&times;</span>
+            <h2>Reset Password</h2>
+            <form id="forgotPasswordForm">
+                <div class="form-group">
+                    <label for="resetEmail">Email Address</label>
+                    <input type="email" id="resetEmail" required>
+                </div>
+                <button type="submit" class="btn-primary">Send Reset Link</button>
+            </form>
+            <p class="forgot-footer"><a href="#" onclick="openLoginModal()">Back to Login</a></p>
+        </div>
+    </div>
+
     <!-- Admin Dashboard Modal -->
     <div id="adminDashboard" class="modal">
         <div class="modal-content admin-dashboard">
@@ -421,6 +637,7 @@
             <div class="admin-tabs">
                 <button class="admin-tab-btn active" onclick="switchAdminTab('batches')">Manage Batches</button>
                 <button class="admin-tab-btn" onclick="switchAdminTab('materials')">Study Materials</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('users')">User Management</button>
                 <button class="admin-tab-btn" onclick="switchAdminTab('gallery')">Gallery</button>
             </div>
 
@@ -513,6 +730,23 @@
                     </div>
                     <button type="submit" class="btn-primary">Upload Material</button>
                 </form>
+            </div>
+
+            <!-- User Management Tab -->
+            <div id="usersTab" class="admin-tab-content">
+                <h3>User Management</h3>
+                <div class="user-filters">
+                    <input type="text" id="userSearch" placeholder="Search users by name, email, or mobile" class="search-input">
+                    <select id="userStatusFilter">
+                        <option value="">All Users</option>
+                        <option value="active">Active</option>
+                        <option value="suspended">Suspended</option>
+                    </select>
+                </div>
+                
+                <div class="users-list" id="usersList">
+                    <!-- Users will be displayed here -->
+                </div>
             </div>
 
             <!-- Gallery Tab -->

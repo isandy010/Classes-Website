@@ -4,6 +4,8 @@ let isAdmin = false;
 let batches = [];
 let studyMaterials = [];
 let galleryImages = [];
+let users = []; // Store registered users
+let userCounter = 1; // For generating unique user IDs
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
@@ -15,6 +17,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Initialize the application
 function initializeApp() {
+    // Load users from localStorage
+    const savedUsers = localStorage.getItem('users');
+    if (savedUsers) {
+        users = JSON.parse(savedUsers);
+        // Find the highest user ID to set the counter
+        if (users.length > 0) {
+            userCounter = Math.max(...users.map(u => parseInt(u.id.split('_')[1]))) + 1;
+        }
+    }
+    
     const savedUser = localStorage.getItem('currentUser');
     if (savedUser) {
         currentUser = JSON.parse(savedUser);
@@ -74,6 +86,28 @@ function setupFormSubmissions() {
     if (galleryForm) {
         galleryForm.addEventListener('submit', handleGalleryForm);
     }
+
+    const signupForm = document.getElementById('signupForm');
+    if (signupForm) {
+        signupForm.addEventListener('submit', handleSignupForm);
+    }
+
+    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+    if (forgotPasswordForm) {
+        forgotPasswordForm.addEventListener('submit', handleForgotPasswordForm);
+    }
+
+    // User management event listeners
+    const userSearch = document.getElementById('userSearch');
+    const userStatusFilter = document.getElementById('userStatusFilter');
+    
+    if (userSearch) {
+        userSearch.addEventListener('input', renderUsersList);
+    }
+    
+    if (userStatusFilter) {
+        userStatusFilter.addEventListener('change', renderUsersList);
+    }
 }
 
 // Setup filters
@@ -113,6 +147,32 @@ function openLoginModal() {
 function closeLoginModal() {
     const loginModal = document.getElementById('loginModal');
     loginModal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function openSignupModal() {
+    closeLoginModal();
+    const signupModal = document.getElementById('signupModal');
+    signupModal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSignupModal() {
+    const signupModal = document.getElementById('signupModal');
+    signupModal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function openForgotPasswordModal() {
+    closeLoginModal();
+    const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+    forgotPasswordModal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeForgotPasswordModal() {
+    const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+    forgotPasswordModal.style.display = 'none';
     document.body.style.overflow = 'auto';
 }
 
@@ -171,23 +231,39 @@ function handleJoinForm(event) {
 function handleStudentLogin(event) {
     event.preventDefault();
     
-    const email = document.getElementById('studentEmail').value;
+    const emailOrMobile = document.getElementById('studentEmail').value;
     const password = document.getElementById('studentPassword').value;
 
-    if (email && password) {
-        currentUser = {
-            id: 'student_' + Date.now(),
-            email: email,
-            role: 'student',
-            name: email.split('@')[0]
-        };
+    if (emailOrMobile && password) {
+        // Find user by email or mobile
+        const user = users.find(u => 
+            (u.email === emailOrMobile || u.mobile === emailOrMobile) && 
+            u.password === password && 
+            u.status === 'active'
+        );
         
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-        isAdmin = false;
-        
-        updateUIForUser();
-        closeLoginModal();
-        showMessage('Student login successful!', 'success');
+        if (user) {
+            currentUser = {
+                id: user.id,
+                email: user.email,
+                mobile: user.mobile,
+                role: 'student',
+                name: user.studentName,
+                standard: user.standard
+            };
+            
+            // Update last login
+            user.lastLogin = new Date().toISOString();
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            isAdmin = false;
+            
+            updateUIForUser();
+            closeLoginModal();
+            showMessage(`Welcome back, ${user.studentName}!`, 'success');
+        } else {
+            showMessage('Invalid credentials or account suspended.', 'error');
+        }
     } else {
         showMessage('Please enter valid credentials.', 'error');
     }
@@ -265,6 +341,74 @@ function handleMaterialForm(event) {
     event.target.reset();
     renderAdminDashboard();
     renderContent();
+}
+
+function handleSignupForm(event) {
+    event.preventDefault();
+    
+    const password = document.getElementById('signupPassword').value;
+    const confirmPassword = document.getElementById('signupConfirmPassword').value;
+    
+    if (password !== confirmPassword) {
+        showMessage('Passwords do not match!', 'error');
+        return;
+    }
+    
+    // Check if user already exists
+    const email = document.getElementById('signupEmail').value;
+    const mobile = document.getElementById('signupMobile').value;
+    
+    const existingUser = users.find(user => 
+        user.email === email || user.mobile === mobile
+    );
+    
+    if (existingUser) {
+        showMessage('User with this email or mobile number already exists!', 'error');
+        return;
+    }
+    
+    const userData = {
+        id: 'user_' + userCounter++,
+        studentName: document.getElementById('signupStudentName').value,
+        parentName: document.getElementById('signupParentName').value,
+        email: email,
+        mobile: mobile,
+        standard: document.getElementById('signupStandard').value,
+        school: document.getElementById('signupSchool').value,
+        subjects: document.getElementById('signupSubjects').value,
+        address: document.getElementById('signupAddress').value,
+        password: password, // In production, this should be hashed
+        status: 'active',
+        registrationDate: new Date().toISOString(),
+        lastLogin: null
+    };
+    
+    users.push(userData);
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    // Export to Excel (simulated)
+    exportUserToExcel(userData);
+    
+    showMessage('Account created successfully! You can now login.', 'success');
+    event.target.reset();
+    closeSignupModal();
+    openLoginModal();
+}
+
+function handleForgotPasswordForm(event) {
+    event.preventDefault();
+    
+    const email = document.getElementById('resetEmail').value;
+    const user = users.find(u => u.email === email);
+    
+    if (user) {
+        // In production, send actual reset email
+        showMessage('Password reset link sent to your email!', 'success');
+        closeForgotPasswordModal();
+        openLoginModal();
+    } else {
+        showMessage('Email not found in our records.', 'error');
+    }
 }
 
 function handleGalleryForm(event) {
@@ -347,7 +491,20 @@ function renderClasses() {
 
 function renderStudyMaterials() {
     const materialsGrid = document.getElementById('materialsGrid');
+    const loginPrompt = document.getElementById('loginPrompt');
+    
     if (!materialsGrid) return;
+
+    if (!currentUser) {
+        // Show login prompt if user is not logged in
+        materialsGrid.style.display = 'none';
+        if (loginPrompt) loginPrompt.style.display = 'block';
+        return;
+    }
+
+    // Hide login prompt and show materials
+    if (loginPrompt) loginPrompt.style.display = 'none';
+    materialsGrid.style.display = 'grid';
 
     if (studyMaterials.length === 0) {
         materialsGrid.innerHTML = `
@@ -406,6 +563,7 @@ function renderGallery() {
 
 function renderAdminDashboard() {
     renderBatchesList();
+    renderUsersList();
 }
 
 function renderBatchesList() {
@@ -433,6 +591,79 @@ function renderBatchesList() {
             </button>
         </div>
     `).join('');
+}
+
+function renderUsersList() {
+    const usersList = document.getElementById('usersList');
+    if (!usersList) return;
+
+    if (users.length === 0) {
+        usersList.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No users registered yet.</p>';
+        return;
+    }
+
+    const searchTerm = document.getElementById('userSearch')?.value || '';
+    const statusFilter = document.getElementById('userStatusFilter')?.value || '';
+    
+    let filteredUsers = users;
+    
+    if (searchTerm) {
+        filteredUsers = filteredUsers.filter(user => 
+            user.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.mobile.includes(searchTerm)
+        );
+    }
+    
+    if (statusFilter) {
+        filteredUsers = filteredUsers.filter(user => user.status === statusFilter);
+    }
+
+    usersList.innerHTML = filteredUsers.map(user => `
+        <div class="user-item">
+            <div class="user-header">
+                <div class="user-title">${user.studentName}</div>
+                <div class="user-status ${user.status}">${user.status}</div>
+            </div>
+            <div class="user-details">
+                <div><strong>Parent:</strong> ${user.parentName}</div>
+                <div><strong>Email:</strong> ${user.email}</div>
+                <div><strong>Mobile:</strong> ${user.mobile}</div>
+                <div><strong>Grade:</strong> ${user.standard}</div>
+                <div><strong>School:</strong> ${user.school || 'Not specified'}</div>
+                <div><strong>Registration:</strong> ${new Date(user.registrationDate).toLocaleDateString()}</div>
+                <div><strong>Last Login:</strong> ${user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Never'}</div>
+            </div>
+            <div class="user-actions">
+                <button onclick="toggleUserStatus('${user.id}')" class="btn-${user.status === 'active' ? 'suspend' : 'activate'}">
+                    ${user.status === 'active' ? 'Suspend' : 'Activate'}
+                </button>
+                <button onclick="deleteUser('${user.id}')" class="btn-delete">
+                    Delete
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// User management functions
+function toggleUserStatus(userId) {
+    const user = users.find(u => u.id === userId);
+    if (user) {
+        user.status = user.status === 'active' ? 'suspended' : 'active';
+        localStorage.setItem('users', JSON.stringify(users));
+        renderUsersList();
+        showMessage(`User ${user.studentName} ${user.status === 'active' ? 'activated' : 'suspended'} successfully!`, 'success');
+    }
+}
+
+function deleteUser(userId) {
+    if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+        users = users.filter(u => u.id !== userId);
+        localStorage.setItem('users', JSON.stringify(users));
+        renderUsersList();
+        showMessage('User deleted successfully!', 'success');
+    }
 }
 
 // Utility functions
@@ -535,13 +766,28 @@ function renderFilteredMaterials(materials) {
 }
 
 function updateUIForUser() {
-    const loginBtn = document.querySelector('.login-btn');
+    const loginButton = document.getElementById('loginButton');
+    const userMenu = document.getElementById('userMenu');
+    const userName = document.getElementById('userName');
+    
     if (currentUser) {
-        loginBtn.textContent = currentUser.name;
-        loginBtn.onclick = isAdmin ? openAdminDashboard : () => showMessage(`Welcome back, ${currentUser.name}!`, 'success');
+        // Hide login button, show user menu
+        loginButton.style.display = 'none';
+        userMenu.style.display = 'block';
+        userName.textContent = currentUser.name;
+        
+        // Update navigation based on user role
+        if (isAdmin) {
+            // Admin can access admin dashboard
+            userName.onclick = openAdminDashboard;
+        } else {
+            // Regular user can access profile
+            userName.onclick = () => showMessage(`Welcome back, ${currentUser.name}!`, 'success');
+        }
     } else {
-        loginBtn.textContent = 'Login';
-        loginBtn.onclick = openLoginModal;
+        // Show login button, hide user menu
+        loginButton.style.display = 'block';
+        userMenu.style.display = 'none';
     }
 }
 
@@ -708,9 +954,114 @@ function switchFaculty(facultyId, btnEl) {
     }
 }
 
+// Google Sign-In function
+function signInWithGoogle() {
+    // Initialize Google Sign-In
+    // Note: You need to get a Google Client ID from Google Cloud Console
+    // Go to: https://console.cloud.google.com/
+    // Create a project and enable Google+ API
+    // Create OAuth 2.0 credentials and replace 'YOUR_GOOGLE_CLIENT_ID' below
+    google.accounts.id.initialize({
+        client_id: 'YOUR_GOOGLE_CLIENT_ID', // Replace with your actual Google Client ID
+        callback: handleGoogleSignIn
+    });
+    
+    google.accounts.id.prompt();
+}
+
+function handleGoogleSignIn(response) {
+    // Decode the JWT token to get user info
+    const payload = JSON.parse(atob(response.credential.split('.')[1]));
+    
+    // Check if user exists
+    let user = users.find(u => u.email === payload.email);
+    
+    if (!user) {
+        // Create new user from Google data
+        user = {
+            id: 'user_' + userCounter++,
+            studentName: payload.name,
+            parentName: 'Google User',
+            email: payload.email,
+            mobile: '',
+            standard: '',
+            school: '',
+            subjects: '',
+            address: '',
+            password: 'google_auth_' + Date.now(), // Special password for Google users
+            status: 'active',
+            registrationDate: new Date().toISOString(),
+            lastLogin: new Date().toISOString(),
+            googleId: payload.sub
+        };
+        
+        users.push(user);
+        localStorage.setItem('users', JSON.stringify(users));
+        
+        // Export to Excel
+        exportUserToExcel(user);
+    } else {
+        // Update last login
+        user.lastLogin = new Date().toISOString();
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+    
+    // Set current user
+    currentUser = {
+        id: user.id,
+        email: user.email,
+        mobile: user.mobile,
+        role: 'student',
+        name: user.studentName,
+        standard: user.standard
+    };
+    
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    isAdmin = false;
+    
+    updateUIForUser();
+    closeLoginModal();
+    showMessage(`Welcome, ${user.studentName}!`, 'success');
+}
+
+// Excel export function
+function exportUserToExcel(userData) {
+    // Create CSV content (Excel can open CSV files)
+    const csvContent = [
+        ['Student Name', 'Parent Name', 'Email', 'Mobile', 'Standard', 'School', 'Subjects', 'Address', 'Registration Date', 'Status'],
+        [
+            userData.studentName,
+            userData.parentName,
+            userData.email,
+            userData.mobile,
+            userData.standard,
+            userData.school,
+            userData.subjects,
+            userData.address,
+            new Date(userData.registrationDate).toLocaleDateString(),
+            userData.status
+        ]
+    ].map(row => row.map(cell => `"${cell || ''}"`).join(',')).join('\n');
+    
+    // Create and download file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `user_${userData.id}_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
 // Export functions for global access
 window.openLoginModal = openLoginModal;
 window.closeLoginModal = closeLoginModal;
+window.openSignupModal = openSignupModal;
+window.closeSignupModal = closeSignupModal;
+window.openForgotPasswordModal = openForgotPasswordModal;
+window.closeForgotPasswordModal = closeForgotPasswordModal;
 window.openAdminDashboard = openAdminDashboard;
 window.closeAdminDashboard = closeAdminDashboard;
 window.switchTab = switchTab;
@@ -722,3 +1073,25 @@ window.deleteBatch = deleteBatch;
 window.openImageModal = openImageModal;
 window.logout = logout;
 window.switchFaculty = switchFaculty;
+window.signInWithGoogle = signInWithGoogle;
+window.toggleUserStatus = toggleUserStatus;
+window.deleteUser = deleteUser;
+window.openUserProfile = () => showMessage('User profile feature coming soon!', 'info');
+window.handleDownload = handleDownload;
+
+// Handle download button clicks - check if user is logged in
+function handleDownload(materialName) {
+    if (!currentUser) {
+        showMessage('Please login to download study materials', 'warning');
+        openLoginModal();
+        return;
+    }
+    
+    // User is logged in, proceed with download
+    showMessage(`Starting download of ${materialName}...`, 'success');
+    
+    // Simulate download process
+    setTimeout(() => {
+        showMessage(`Successfully downloaded ${materialName}!`, 'success');
+    }, 2000);
+}
