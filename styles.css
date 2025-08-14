@@ -359,6 +359,173 @@ section {
     margin-bottom: 0;
 }
 
+/* Faculty Section */
+.faculty {
+    background: var(--bg-secondary);
+    padding: 5rem 0;
+}
+
+.section-subtitle {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.faculty-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.toggle-btn {
+    padding: 12px 24px;
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    color: var(--text-secondary);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.toggle-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--text-primary);
+}
+
+.toggle-btn.active {
+    background: var(--gradient-primary);
+    border-color: var(--primary-color);
+    color: white;
+    box-shadow: var(--shadow);
+}
+
+.faculty-content {
+    position: relative;
+    min-height: 400px;
+}
+
+.faculty-card {
+    display: none;
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+}
+
+.faculty-card.active {
+    display: block;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.faculty-image {
+    width: 120px;
+    height: 120px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2rem;
+}
+
+.faculty-image i {
+    font-size: 3rem;
+    color: white;
+}
+
+.faculty-details h3 {
+    color: var(--text-primary);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.faculty-experience,
+.faculty-qualification {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.faculty-experience i,
+.faculty-qualification i {
+    color: var(--accent-color);
+    width: 20px;
+}
+
+.faculty-description {
+    margin: 1.5rem 0;
+}
+
+.faculty-description p {
+    margin-bottom: 1rem;
+    line-height: 1.7;
+}
+
+.faculty-specialties {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.specialty-tag {
+    background: var(--gradient-secondary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.faculty-commitment {
+    margin-top: 4rem;
+    text-align: center;
+    padding: 2rem;
+    background: var(--bg-card);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+}
+
+.faculty-commitment h3 {
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+}
+
+.faculty-commitment p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    line-height: 1.7;
+}
+
+.commitment-highlight {
+    color: var(--accent-color) !important;
+    font-size: 1.2rem;
+    font-weight: 600;
+    font-style: italic;
+}
+
 /* Classes Section */
 .classes {
     background: var(--bg-primary);
@@ -1148,6 +1315,33 @@ section {
         grid-template-columns: 1fr;
     }
 
+    .faculty-toggle {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .toggle-btn {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .faculty-card {
+        padding: 1.5rem;
+    }
+
+    .faculty-image {
+        width: 100px;
+        height: 100px;
+    }
+
+    .faculty-image i {
+        font-size: 2.5rem;
+    }
+
+    .faculty-specialties {
+        justify-content: center;
+    }
+
     .classes-grid,
     .materials-grid,
     .gallery-grid {
@@ -1188,6 +1382,23 @@ section {
     .btn-secondary {
         width: 100%;
         max-width: 300px;
+    }
+
+    .faculty {
+        padding: 3rem 0;
+    }
+
+    .faculty-toggle {
+        gap: 0.5rem;
+    }
+
+    .faculty-card {
+        padding: 1rem;
+    }
+
+    .faculty-commitment {
+        padding: 1.5rem;
+        margin-top: 2rem;
     }
 }
 

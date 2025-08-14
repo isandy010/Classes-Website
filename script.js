@@ -687,6 +687,27 @@ function logout() {
     showMessage('Logged out successfully!', 'success');
 }
 
+// Faculty toggle function
+function switchFaculty(facultyId, btnEl) {
+    // Remove active class from all faculty cards and toggle buttons
+    const facultyCards = document.querySelectorAll('.faculty-card');
+    const toggleBtns = document.querySelectorAll('.toggle-btn');
+    
+    facultyCards.forEach(card => card.classList.remove('active'));
+    toggleBtns.forEach(btn => btn.classList.remove('active'));
+    
+    // Add active class to selected faculty card and toggle button
+    const selectedCard = document.getElementById(facultyId + '-card');
+    const selectedBtn = btnEl || document.querySelector(`[onclick^="switchFaculty('${facultyId}'"]`);
+    
+    if (selectedCard) {
+        selectedCard.classList.add('active');
+    }
+    if (selectedBtn) {
+        selectedBtn.classList.add('active');
+    }
+}
+
 // Export functions for global access
 window.openLoginModal = openLoginModal;
 window.closeLoginModal = closeLoginModal;
@@ -700,3 +721,4 @@ window.downloadMaterial = downloadMaterial;
 window.deleteBatch = deleteBatch;
 window.openImageModal = openImageModal;
 window.logout = logout;
+window.switchFaculty = switchFaculty;
