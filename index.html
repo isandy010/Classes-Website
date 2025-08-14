@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Progressive Classes - Your Learning Journey Starts Here</title>
+    <title>Progressive Classes - Your Journey to Excellence Begins Here</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -19,6 +19,7 @@
             <ul class="nav-menu">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#features">Features</a></li>
+                <li><a href="#faculty">Faculty</a></li>
                 <li><a href="#classes">Classes</a></li>
                 <li><a href="#materials">Study Materials</a></li>
                 <li><a href="#gallery">Gallery</a></li>
@@ -88,6 +89,71 @@
                     <h3>24/7 Support</h3>
                     <p>Get help whenever you need it with our round-the-clock support system.</p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Faculty Section -->
+    <section id="faculty" class="faculty">
+        <div class="container">
+            <h2 class="section-title">Meet Our Dedicated Faculty</h2>
+            <p class="section-subtitle">At Progressive Classes, we take pride in our teachers who combine expertise, passion, and unwavering commitment to help students excel academically and personally.</p>
+            
+            <div class="faculty-toggle">
+                <button class="toggle-btn active" onclick="switchFaculty('rajesh', this)">Rajesh - Senior Faculty</button>
+                <button class="toggle-btn" onclick="switchFaculty('sapna', this)">Sapna - Faculty</button>
+            </div>
+            
+            <div class="faculty-content">
+                <!-- Rajesh Faculty Card -->
+                <div id="rajesh-card" class="faculty-card active">
+                    <div class="faculty-image">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="faculty-details">
+                        <h3>Rajesh – Senior Faculty (Mathematics & Science)</h3>
+                        <p class="faculty-experience"><i class="fas fa-clock"></i> Over 9 years of teaching experience</p>
+                        <p class="faculty-qualification"><i class="fas fa-graduation-cap"></i> Dual degrees in Mechanical Engineering and Law (LLB)</p>
+                        <div class="faculty-description">
+                            <p>With over 9 years of teaching experience, Rajesh brings a wealth of knowledge and a distinctive approach to learning. Holding dual degrees in Mechanical Engineering and Law (LLB), he blends logical precision with analytical thinking to make Mathematics and Science engaging and easy to understand.</p>
+                            <p>His ability to break down complex concepts into simple, relatable ideas has helped countless students achieve exceptional results. Rajesh is not only an educator but also a mentor, guiding students with discipline, dedication, and extra effort—especially during crucial exam periods.</p>
+                        </div>
+                        <div class="faculty-specialties">
+                            <span class="specialty-tag">Mathematics</span>
+                            <span class="specialty-tag">Science</span>
+                            <span class="specialty-tag">Logical Thinking</span>
+                            <span class="specialty-tag">Exam Preparation</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sapna Faculty Card -->
+                <div id="sapna-card" class="faculty-card">
+                    <div class="faculty-image">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="faculty-details">
+                        <h3>Sapna – Faculty (Core Subjects)</h3>
+                        <p class="faculty-experience"><i class="fas fa-clock"></i> Over 2 years of teaching experience</p>
+                        <p class="faculty-qualification"><i class="fas fa-graduation-cap"></i> Graduate committed to building a lasting career in education</p>
+                        <div class="faculty-description">
+                            <p>Passionate and dedicated, Sapna has been teaching for over 2 years and is a graduate committed to building a lasting career in education. Her enthusiasm for teaching and her approachable nature make her a favorite among students.</p>
+                            <p>Sapna goes beyond classroom teaching, taking full responsibility for her student's academic progress, ensuring they receive consistent support, and dedicating extra hours when exams approach.</p>
+                        </div>
+                        <div class="faculty-specialties">
+                            <span class="specialty-tag">Core Subjects</span>
+                            <span class="specialty-tag">Student Support</span>
+                            <span class="specialty-tag">Personal Attention</span>
+                            <span class="specialty-tag">Exam Preparation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="faculty-commitment">
+                <h3>Our Commitment to Students</h3>
+                <p>Both Rajesh and Sapna share a common teaching philosophy, strict discipline paired with compassionate guidance. They actively engage with students, foster curiosity, and ensure that every learner receives personalized attention. Whether it's day-to-day learning or intensive exam preparation, they go above and beyond to help students perform at their best.</p>
+                <p class="commitment-highlight">At Progressive Classes, our faculty doesn't just teach, they inspire.</p>
             </div>
         </div>
     </section>
@@ -239,12 +305,16 @@
                 </div>
                 <div class="contact-map">
                     <div id="map">
-                        <!-- Map will be embedded here -->
-                        <div class="map-placeholder">
-                            <i class="fas fa-map"></i>
-                            <p>Interactive Map</p>
-                            <small>Google Maps integration</small>
-                        </div>
+                        <iframe
+                            title="Progressive Classes Location"
+                            width="100%"
+                            height="100%"
+                            style="border:0"
+                            loading="lazy"
+                            allowfullscreen
+                            referrerpolicy="no-referrer-when-downgrade"
+                            src="https://www.google.com/maps?q=Gala%20No.%207,%20Mangalmurti%20Apartment,%20Vidyaniketan%20Road,%20Manpada,%20Dombivli%20East&output=embed">
+                        </iframe>
                     </div>
                 </div>
             </div>
