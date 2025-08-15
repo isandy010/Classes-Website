@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -59,8 +58,7 @@
             <div class="hero-image">
                 <div class="floating-card">
                     <i class="fas fa-users"></i>
-                    <h3>500+ Students</h3>
-                    <p>Already Learning</p>
+                    <h3>Admissions Open</h3>
                 </div>
             </div>
         </div>
@@ -796,43 +794,6 @@
                 <div id="auth-message"></div>
             </div>
 
-<!-- Firebase Authentication only (for user accounts, works with Vercel) -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyBwItn2UwypRA2-urGcZGaZ1wvLOWdDN6M",
-        authDomain: "progressive-classes-785ae.firebaseapp.com",
-        projectId: "progressive-classes-785ae",
-        storageBucket: "progressive-classes-785ae.firebasestorage.app",
-        messagingSenderId: "1097227639488",
-        appId: "1:1097227639488:web:ed394a6702120a7be86b25"
-    };
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    document.getElementById('login-btn').addEventListener('click', async () => {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-            document.getElementById('auth-message').innerText = 'Login successful!';
-        } catch (error) {
-            document.getElementById('auth-message').innerText = error.message;
-        }
-    });
-
-    document.getElementById('signup-btn').addEventListener('click', async () => {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            document.getElementById('auth-message').innerText = 'Signup successful!';
-        } catch (error) {
-            document.getElementById('auth-message').innerText = error.message;
-        }
-    });
-</script>
+<!-- ...existing code... -->
 </body>
 </html>

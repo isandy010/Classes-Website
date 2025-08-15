@@ -1,6 +1,5 @@
 // Global Variables
-// Firebase Authentication
-let firebaseAuth;
+// ...existing code...
 let currentUser = null;
 let isAdmin = false;
 let batches = [];
@@ -15,35 +14,108 @@ document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
     loadSampleData();
     renderContent();
-    // Firebase Auth
-    if (window.firebase) {
-        firebaseAuth = firebase.auth();
-        setupFirebaseAuthListeners();
+// Local storage-based authentication logic
+let pendingUsers = [];
+
+function loadLocalData() {
+    const savedUsers = localStorage.getItem('users');
+    if (savedUsers) {
+        users = JSON.parse(savedUsers);
+        if (users.length > 0) {
+            userCounter = Math.max(...users.map(u => parseInt(u.id.split('_')[1]))) + 1;
+        }
     }
-// Setup Firebase Auth event listeners
-function setupFirebaseAuthListeners() {
-    document.getElementById('login-btn').addEventListener('click', function() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        firebaseAuth.signInWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-                document.getElementById('auth-message').innerText = 'Login successful!';
-            })
-            .catch((error) => {
-                document.getElementById('auth-message').innerText = error.message;
-            });
-    });
-    document.getElementById('signup-btn').addEventListener('click', function() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-                document.getElementById('auth-message').innerText = 'Signup successful!';
-            })
-            .catch((error) => {
-                document.getElementById('auth-message').innerText = error.message;
-            });
-    });
+    const savedPending = localStorage.getItem('pendingUsers');
+    if (savedPending) {
+        pendingUsers = JSON.parse(savedPending);
+    }
+    const savedUser = localStorage.getItem('currentUser');
+    if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        isAdmin = currentUser.role === 'admin';
+        updateUIForUser();
+    }
+}
+
+function saveLocalData() {
+    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem('pendingUsers', JSON.stringify(pendingUsers));
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadLocalData();
+    setupEventListeners();
+    loadSampleData();
+    renderContent();
+});
+
+function handleLocalSignup(event) {
+    event.preventDefault();
+    const form = event.target;
+    const password = form.signupPassword.value;
+    const confirmPassword = form.signupConfirmPassword.value;
+    if (password !== confirmPassword) {
+        document.getElementById('auth-message').innerText = 'Passwords do not match.';
+        return;
+    }
+    const newUser = {
+        id: `user_${userCounter++}`,
+        studentName: form.signupStudentName.value,
+        parentName: form.signupParentName.value,
+        email: form.signupEmail.value,
+        mobile: form.signupMobile.value,
+        standard: form.signupStandard.value,
+        school: form.signupSchool.value,
+        subjects: form.signupSubjects.value,
+        password: password,
+        address: form.signupAddress.value,
+        status: 'pending',
+        role: 'student'
+    };
+    pendingUsers.push(newUser);
+    saveLocalData();
+    document.getElementById('auth-message').innerText = 'Signup request submitted. Please wait for admin approval.';
+    closeSignupModal();
+}
+
+function handleLocalLogin(event) {
+    event.preventDefault();
+    const form = event.target;
+    const emailOrMobile = form.studentEmail.value;
+    const password = form.studentPassword.value;
+    const user = users.find(u => (u.email === emailOrMobile || u.mobile === emailOrMobile) && u.password === password && u.status === 'active');
+    if (user) {
+        currentUser = user;
+        isAdmin = user.role === 'admin';
+        saveLocalData();
+        updateUIForUser();
+        closeLoginModal();
+        document.getElementById('auth-message').innerText = 'Login successful!';
+    } else {
+        document.getElementById('auth-message').innerText = 'Invalid credentials or account not approved yet.';
+    }
+}
+
+function approveUser(userId) {
+    const idx = pendingUsers.findIndex(u => u.id === userId);
+    if (idx > -1) {
+        const user = pendingUsers[idx];
+        user.status = 'active';
+        users.push(user);
+        pendingUsers.splice(idx, 1);
+        saveLocalData();
+        renderUsersList();
+    }
+}
+
+function rejectUser(userId) {
+    const idx = pendingUsers.findIndex(u => u.id === userId);
+    if (idx > -1) {
+        pendingUsers.splice(idx, 1);
+        saveLocalData();
+        renderUsersList();
+    }
 }
 });
 
