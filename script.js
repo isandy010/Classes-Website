@@ -1,9 +1,4 @@
 // Global Variables
-// Supabase client setup
-const SUPABASE_URL = 'https://mxslavxuooljrdrolext.supabase.co'; // Replace with your Supabase project URL
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14c2xhdnh1b29sanJkcm9sZXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUyNDkyMDcsImV4cCI6MjA3MDgyNTIwN30.xJE-R0ZjhHYznRKLPuQr6qT-C5oJBuTfyGiS7SpgBU0'; // Replace with your Supabase anon key
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-// ...existing code...
 let currentUser = null;
 let isAdmin = false;
 let batches = [];
@@ -18,150 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
     loadSampleData();
     renderContent();
-    // Remove local pendingUsers, will fetch from Supabase
-    window.pendingUsers = [];
-
-function loadLocalData() {
-    const savedUsers = localStorage.getItem('users');
-    if (savedUsers) {
-        users = JSON.parse(savedUsers);
-        if (users.length > 0) {
-            userCounter = Math.max(...users.map(u => parseInt(u.id.split('_')[1]))) + 1;
-        }
-    }
-    const savedPending = localStorage.getItem('pendingUsers');
-    if (savedPending) {
-        pendingUsers = JSON.parse(savedPending);
-    }
-    const savedUser = localStorage.getItem('currentUser');
-    if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        isAdmin = currentUser.role === 'admin';
-        updateUIForUser();
-    }
-}
-
-function saveLocalData() {
-    localStorage.setItem('users', JSON.stringify(users));
-    localStorage.setItem('pendingUsers', JSON.stringify(pendingUsers));
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    loadLocalData();
-    setupEventListeners();
-    loadSampleData();
-    renderContent();
-});
-
-async function handleLocalSignup(event) {
-    event.preventDefault();
-    const form = event.target;
-    const password = form.signupPassword.value;
-    const confirmPassword = form.signupConfirmPassword.value;
-    if (password !== confirmPassword) {
-        document.getElementById('auth-message').innerText = 'Passwords do not match.';
-        return;
-    }
-    const email = form.signupEmail.value;
-    const mobile = form.signupMobile.value;
-    // Check if user already exists in Supabase
-    const { data: existing, error: existErr } = await supabase
-        .from('profiles')
-        .select('id')
-        .or(`email.eq.${email},mobile.eq.${mobile}`);
-    if (existing && existing.length > 0) {
-        document.getElementById('auth-message').innerText = 'User with this email or mobile already exists.';
-        return;
-    }
-    // Create auth user (but do not allow login until approved)
-    const { user, error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-        document.getElementById('auth-message').innerText = error.message;
-        return;
-    }
-    // Insert profile with status 'pending'
-    await supabase.from('profiles').insert([{
-        id: user.id,
-        studentName: form.signupStudentName.value,
-        parentName: form.signupParentName.value,
-        email: email,
-        mobile: mobile,
-        standard: form.signupStandard.value,
-        school: form.signupSchool.value,
-        subjects: form.signupSubjects.value,
-        address: form.signupAddress.value,
-        status: 'pending',
-        role: 'student',
-        registrationDate: new Date().toISOString(),
-        lastLogin: null
-    }]);
-    // Notify admin in notifications table
-    await supabase.from('notifications').insert([{
-        type: 'signup',
-        user_id: user.id,
-        studentName: form.signupStudentName.value,
-        email: email,
-        date: new Date().toISOString(),
-        read: false
-    }]);
-    document.getElementById('auth-message').innerText = 'Your Request is Submitted.';
-    closeSignupModal();
-}
-
-async function handleLocalLogin(event) {
-    event.preventDefault();
-    const form = event.target;
-    const emailOrMobile = form.studentEmail.value;
-    const password = form.studentPassword.value;
-    // Find user by email/mobile in Supabase profiles
-    const { data: profiles, error: profileErr } = await supabase
-        .from('profiles')
-        .select('*')
-        .or(`email.eq.${emailOrMobile},mobile.eq.${emailOrMobile}`);
-    if (!profiles || profiles.length === 0) {
-        document.getElementById('auth-message').innerText = 'Invalid credentials.';
-        return;
-    }
-    const userProfile = profiles[0];
-    // Try login via Supabase auth
-    const { data: loginData, error: loginErr } = await supabase.auth.signInWithPassword({ email: userProfile.email, password });
-    if (loginErr) {
-        document.getElementById('auth-message').innerText = 'Invalid credentials.';
-        return;
-    }
-    // Check approval
-    if (userProfile.status === 'active') {
-        currentUser = userProfile;
-        isAdmin = userProfile.role === 'admin';
-        await supabase.from('profiles').update({ lastLogin: new Date().toISOString() }).eq('id', userProfile.id);
-        updateUIForUser();
-        closeLoginModal();
-        document.getElementById('auth-message').innerText = 'Login successful!';
-    } else {
-        document.getElementById('auth-message').innerText = 'Your account is pending approval.';
-        await supabase.auth.signOut();
-    }
-}
-
-async function approveUser(userId) {
-    // Update user status in Supabase
-    await supabase.from('profiles').update({ status: 'active' }).eq('id', userId);
-    // Mark notification as read
-    await supabase.from('notifications').update({ read: true }).eq('user_id', userId);
-    renderUsersList();
-    renderNotificationsPanel();
-    renderPendingUsers();
-}
-
-function rejectUser(userId) {
-    const idx = pendingUsers.findIndex(u => u.id === userId);
-    if (idx > -1) {
-        pendingUsers.splice(idx, 1);
-        saveLocalData();
-        renderUsersList();
-    }
-}
 });
 
 // Initialize the application
@@ -377,41 +228,44 @@ function handleJoinForm(event) {
     event.target.reset();
 }
 
-async function handleStudentLogin(event) {
+function handleStudentLogin(event) {
     event.preventDefault();
+    
     const emailOrMobile = document.getElementById('studentEmail').value;
     const password = document.getElementById('studentPassword').value;
-    if (!emailOrMobile || !password) {
-        showMessage('Please enter valid credentials.', 'error');
-        return;
-    }
-    // Find user profile by email or mobile
-    const { data: profiles, error: profileErr } = await supabase
-        .from('profiles')
-        .select('*')
-        .or(`email.eq.${emailOrMobile},mobile.eq.${emailOrMobile}`);
-    if (!profiles || profiles.length === 0) {
-        showMessage('Invalid credentials.', 'error');
-        return;
-    }
-    const userProfile = profiles[0];
-    // Try login via Supabase auth
-    const { data: loginData, error: loginErr } = await supabase.auth.signInWithPassword({ email: userProfile.email, password });
-    if (loginErr) {
-        showMessage('Invalid credentials.', 'error');
-        return;
-    }
-    // Check approval
-    if (userProfile.status === 'active') {
-        currentUser = userProfile;
-        isAdmin = userProfile.role === 'admin';
-        await supabase.from('profiles').update({ lastLogin: new Date().toISOString() }).eq('id', userProfile.id);
-        updateUIForUser();
-        closeLoginModal();
-        showMessage(`Welcome back, ${userProfile.studentName}!`, 'success');
+
+    if (emailOrMobile && password) {
+        // Find user by email or mobile
+        const user = users.find(u => 
+            (u.email === emailOrMobile || u.mobile === emailOrMobile) && 
+            u.password === password && 
+            u.status === 'active'
+        );
+        
+        if (user) {
+            currentUser = {
+                id: user.id,
+                email: user.email,
+                mobile: user.mobile,
+                role: 'student',
+                name: user.studentName,
+                standard: user.standard
+            };
+            
+            // Update last login
+            user.lastLogin = new Date().toISOString();
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            isAdmin = false;
+            
+            updateUIForUser();
+            closeLoginModal();
+            showMessage(`Welcome back, ${user.studentName}!`, 'success');
+        } else {
+            showMessage('Invalid credentials or account suspended.', 'error');
+        }
     } else {
-        showMessage('Your account is pending approval.', 'error');
-        await supabase.auth.signOut();
+        showMessage('Please enter valid credentials.', 'error');
     }
 }
 
@@ -489,34 +343,32 @@ function handleMaterialForm(event) {
     renderContent();
 }
 
-async function handleSignupForm(event) {
+function handleSignupForm(event) {
     event.preventDefault();
+    
     const password = document.getElementById('signupPassword').value;
     const confirmPassword = document.getElementById('signupConfirmPassword').value;
+    
     if (password !== confirmPassword) {
         showMessage('Passwords do not match!', 'error');
         return;
     }
+    
+    // Check if user already exists
     const email = document.getElementById('signupEmail').value;
     const mobile = document.getElementById('signupMobile').value;
-    // Check if user already exists in Supabase
-    const { data: existing, error: existErr } = await supabase
-        .from('profiles')
-        .select('id')
-        .or(`email.eq.${email},mobile.eq.${mobile}`);
-    if (existing && existing.length > 0) {
+    
+    const existingUser = users.find(user => 
+        user.email === email || user.mobile === mobile
+    );
+    
+    if (existingUser) {
         showMessage('User with this email or mobile number already exists!', 'error');
         return;
     }
-    // Create auth user (but do not allow login until approved)
-    const { data: signUpData, error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-        showMessage(error.message, 'error');
-        return;
-    }
-    // Insert profile with status 'pending'
-    await supabase.from('profiles').insert([{
-        id: signUpData.user.id,
+    
+    const userData = {
+        id: 'user_' + userCounter++,
         studentName: document.getElementById('signupStudentName').value,
         parentName: document.getElementById('signupParentName').value,
         email: email,
@@ -525,23 +377,22 @@ async function handleSignupForm(event) {
         school: document.getElementById('signupSchool').value,
         subjects: document.getElementById('signupSubjects').value,
         address: document.getElementById('signupAddress').value,
-        status: 'pending',
-        role: 'student',
+        password: password, // In production, this should be hashed
+        status: 'active',
         registrationDate: new Date().toISOString(),
         lastLogin: null
-    }]);
-    // Notify admin in notifications table
-    await supabase.from('notifications').insert([{
-        type: 'signup',
-        user_id: signUpData.user.id,
-        studentName: document.getElementById('signupStudentName').value,
-        email: email,
-        date: new Date().toISOString(),
-        read: false
-    }]);
-    showMessage('Your Request is Submitted. Please wait for admin approval.', 'success');
+    };
+    
+    users.push(userData);
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    // Export to Excel (simulated)
+    exportUserToExcel(userData);
+    
+    showMessage('Account created successfully! You can now login.', 'success');
     event.target.reset();
     closeSignupModal();
+    openLoginModal();
 }
 
 function handleForgotPasswordForm(event) {
@@ -713,8 +564,6 @@ function renderGallery() {
 function renderAdminDashboard() {
     renderBatchesList();
     renderUsersList();
-    renderPendingUsers();
-    renderNotificationsPanel();
 }
 
 function renderBatchesList() {
@@ -798,52 +647,6 @@ function renderUsersList() {
 }
 
 // User management functions
-// Render pending users for admin approval
-async function renderPendingUsers() {
-    const pendingList = document.getElementById('pendingUsersList');
-    if (!pendingList) return;
-    const { data: pending, error } = await supabase.from('profiles').select('*').eq('status', 'pending');
-    if (!pending || pending.length === 0) {
-        pendingList.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No pending sign-up requests.</p>';
-        return;
-    }
-    pendingList.innerHTML = pending.map(user => `
-        <div class="user-item">
-            <div class="user-header">
-                <div class="user-title">${user.studentName}</div>
-                <div class="user-status pending">Pending</div>
-            </div>
-            <div class="user-details">
-                <div><strong>Email:</strong> ${user.email}</div>
-                <div><strong>Mobile:</strong> ${user.mobile}</div>
-                <div><strong>Grade:</strong> ${user.standard}</div>
-                <div><strong>School:</strong> ${user.school || 'Not specified'}</div>
-                <div><strong>Registration:</strong> ${new Date(user.registrationDate).toLocaleDateString()}</div>
-            </div>
-            <div class="user-actions">
-                <button onclick="approveUser('${user.id}')" class="btn-activate">Approve</button>
-                <button onclick="rejectUser('${user.id}')" class="btn-delete">Reject</button>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Render notifications for admin
-async function renderNotificationsPanel() {
-    const notifPanel = document.getElementById('adminNotifications');
-    if (!notifPanel) return;
-    const { data: notifications, error } = await supabase.from('notifications').select('*').order('date', { ascending: false });
-    if (!notifications || notifications.length === 0) {
-        notifPanel.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No notifications.</p>';
-        return;
-    }
-    notifPanel.innerHTML = notifications.map(n => `
-        <div class="notification-item${n.read ? ' read' : ''}">
-            <div><strong>New Signup:</strong> ${n.studentName} (${n.email})</div>
-            <div><small>${new Date(n.date).toLocaleString()}</small></div>
-        </div>
-    `).join('');
-}
 function toggleUserStatus(userId) {
     const user = users.find(u => u.id === userId);
     if (user) {

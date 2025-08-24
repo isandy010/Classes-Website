@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@3.0.0/dist/index.min.js"></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -34,7 +35,7 @@
                         </div>
                     </div>
                 </li>
-                <li id="loginButton"><button class="login-btn" onclick="openLoginModal()">Login</button></li>
+                <li id="loginButton"><button class="login-btn" onclick="clerk.showSignIn()">Login</button></li>
             </ul>
             <div class="hamburger">
                 <span></span>
@@ -43,6 +44,10 @@
             </div>
         </div>
     </nav>
+
+    <!-- Load Clerk SDK from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@3.0.0/dist/index.min.js"></script>
+    <script src="clerk.js"></script>
 
     <!-- Hero Section -->
     <section id="home" class="hero">
@@ -124,7 +129,7 @@
                         <p class="faculty-qualification"><i class="fas fa-graduation-cap"></i> Dual degrees in Mechanical Engineering and Law (LLB)</p>
                         <div class="faculty-description">
                             <p>With over 9 years of teaching experience, Rajesh brings a wealth of knowledge and a distinctive approach to learning. Holding dual degrees in Mechanical Engineering and Law (LLB), he blends logical precision with analytical thinking to make Mathematics and Science engaging and easy to understand.</p>
-                            <p>His ability to break down complex concepts into simple, relatable ideas has helped countless students achieve exceptional results. Rajesh is not only an educator but also a mentor, guiding students with discipline, dedication, and extra effort especially during crucial exam periods.</p>
+                            <p>His ability to break down complex concepts into simple, relatable ideas has helped countless students achieve exceptional results. Rajesh is not only an educator but also a mentor, guiding students with discipline, dedication, and extra effort—especially during crucial exam periods.</p>
                         </div>
                         <div class="faculty-specialties">
                             <span class="specialty-tag">Mathematics</span>
@@ -481,10 +486,9 @@
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeLoginModal()">&times;</span>
-            <div class="login-tabs">
-                <button class="tab-btn active" onclick="switchTab('student')">Student Login</button>
-                <button class="tab-btn" onclick="switchTab('admin')">Admin Login</button>
-            </div>
+<div class="login-tabs">
+  <button class="tab-btn active" onclick="switchTab('student')">Student Login</button>
+</div>
             
             <!-- Student Login -->
             <div id="studentLogin" class="tab-content active">
@@ -501,26 +505,17 @@
                     <button type="submit" class="btn-primary">Login</button>
                 </form>
                 
+                <!-- Google Login Button -->
+                <!-- Google Login Button removed as per user's request to remove Google login feature -->
+                <div class="google-login" style="display: none !important;">
+                    <!-- Empty space to avoid layout shift -->
+                </div>
                 
                 <p class="login-footer">Don't have an account? <a href="#" onclick="openSignupModal()">Register here</a></p>
                 <p class="login-footer"><a href="#" onclick="openForgotPasswordModal()">Forgot Password?</a></p>
             </div>
 
             <!-- Admin Login -->
-            <div id="adminLogin" class="tab-content">
-                <h2>Admin Login</h2>
-                <form id="adminLoginForm">
-                    <div class="form-group">
-                        <label for="adminUsername">Username</label>
-                        <input type="text" id="adminUsername" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="adminPassword">Password</label>
-                        <input type="password" id="adminPassword" required>
-                    </div>
-                    <button type="submit" class="btn-primary">Login</button>
-                </form>
-            </div>
         </div>
     </div>
 
@@ -615,183 +610,7 @@
     </div>
 
     <!-- Admin Dashboard Modal -->
-    <div id="adminDashboard" class="modal">
-        <div class="modal-content admin-dashboard">
-            <span class="close" onclick="closeAdminDashboard()">&times;</span>
-            <h2>Admin Dashboard</h2>
-            
-            <div class="admin-tabs">
-                <button class="admin-tab-btn active" onclick="switchAdminTab('batches')">Manage Batches</button>
-                <button class="admin-tab-btn" onclick="switchAdminTab('materials')">Study Materials</button>
-                <button class="admin-tab-btn" onclick="switchAdminTab('users')">User Management</button>
-                <button class="admin-tab-btn" onclick="switchAdminTab('gallery')">Gallery</button>
-            </div>
-
-            <!-- Manage Batches Tab -->
-            <div id="batchesTab" class="admin-tab-content active">
-                <h3>Create New Batch</h3>
-                <form id="batchForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="batchSubject">Subject</label>
-                            <input type="text" id="batchSubject" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="batchGrade">Grade</label>
-                            <select id="batchGrade" required>
-                                <option value="">Select Grade</option>
-                                <option value="1-5">Grade 1-5</option>
-                                <option value="6-8">Grade 6-8</option>
-                                <option value="9-10">Grade 9-10</option>
-                                <option value="11-12">Grade 11-12</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="batchDate">Date</label>
-                            <input type="date" id="batchDate" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="batchTime">Time</label>
-                            <input type="time" id="batchTime" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="batchDuration">Duration (minutes)</label>
-                            <input type="number" id="batchDuration" min="30" max="180" value="60" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="batchCapacity">Capacity</label>
-                            <input type="number" id="batchCapacity" min="1" max="20" value="15" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="batchTeacher">Teacher</label>
-                        <input type="text" id="batchTeacher" required>
-                    </div>
-                    <button type="submit" class="btn-primary">Create Batch</button>
-                </form>
-
-                <h3>Existing Batches</h3>
-                <div class="batches-list" id="batchesList">
-                    <!-- Batches will be displayed here -->
-                </div>
-            </div>
-
-            <!-- Study Materials Tab -->
-            <div id="materialsTab" class="admin-tab-content">
-                <h3>Upload Study Material</h3>
-                <form id="materialForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="materialTitle">Title</label>
-                            <input type="text" id="materialTitle" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="materialSubject">Subject</label>
-                            <input type="text" id="materialSubject" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="materialGrade">Grade</label>
-                            <select id="materialGrade" required>
-                                <option value="">Select Grade</option>
-                                <option value="1-5">Grade 1-5</option>
-                                <option value="6-8">Grade 6-8</option>
-                                <option value="9-10">Grade 9-10</option>
-                                <option value="11-12">Grade 11-12</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="materialFile">File</label>
-                            <input type="file" id="materialFile" accept=".pdf,.doc,.docx,.ppt,.pptx" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="materialDescription">Description</label>
-                        <textarea id="materialDescription" rows="3"></textarea>
-                    </div>
-                    <button type="submit" class="btn-primary">Upload Material</button>
-                </form>
-            </div>
-
-            <!-- User Management Tab -->
-            <div id="usersTab" class="admin-tab-content">
-                <h3>User Management</h3>
-                <div class="user-filters">
-                    <input type="text" id="userSearch" placeholder="Search users by name, email, or mobile" class="search-input">
-                    <select id="userStatusFilter">
-                        <option value="">All Users</option>
-                        <option value="active">Active</option>
-                        <option value="suspended">Suspended</option>
-                    </select>
-                </div>
-                <div class="users-list" id="usersList">
-                    <!-- Users will be displayed here -->
-                </div>
-                <h3>Pending Sign-Up Requests</h3>
-                <div class="pending-users-list" id="pendingUsersList">
-                    <!-- Pending users will be displayed here -->
-                </div>
-                <h3>Admin Notifications</h3>
-                <div class="admin-notifications" id="adminNotifications">
-                    <!-- Notifications will be displayed here -->
-                </div>
-            </div>
-
-            <!-- Gallery Tab -->
-            <div id="galleryTab" class="admin-tab-content">
-                <h3>Upload Gallery Image</h3>
-                <form id="galleryForm">
-                    <div class="form-group">
-                        <label for="galleryTitle">Title</label>
-                        <input type="text" id="galleryTitle" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="galleryCategory">Category</label>
-                        <select id="galleryCategory" required>
-                            <option value="">Select Category</option>
-                            <option value="classroom">Classroom</option>
-                            <option value="facility">Facility</option>
-                            <option value="event">Event</option>
-                            <option value="amenity">Amenity</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="galleryImage">Image</label>
-                        <input type="file" id="galleryImage" accept="image/*" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="galleryDescription">Description</label>
-                        <textarea id="galleryDescription" rows="3"></textarea>
-                    </div>
-                    <button type="submit" class="btn-primary">Upload Image</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Success/Error Messages -->
-    <div id="message" class="message"></div>
 
     <script src="script.js"></script>
-
-            <!-- Login Form -->
-            <div id="login-container">
-                <h2>Login</h2>
-                <input type="email" id="email" placeholder="Email" />
-                <input type="password" id="password" placeholder="Password" />
-                <button id="login-btn">Login</button>
-                <button id="signup-btn">Sign Up</button>
-                <div id="auth-message"></div>
-            </div>
-
-<!-- ...existing code... -->
-   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script src="script.js"></script>
-</head>
 </body>
 </html>
